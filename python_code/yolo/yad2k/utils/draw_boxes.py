@@ -5,6 +5,7 @@ import random
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+from pascal_voc_writer import Writer
 
 
 def get_colors_for_classes(num_classes):
@@ -26,7 +27,7 @@ def get_colors_for_classes(num_classes):
     return colors
 
 
-def draw_boxes(image, boxes, box_classes, class_names, scores=None):
+def draw_boxes(image, boxes, box_classes, class_names, scores=None,img_name='1.jpg'):
     """Draw bounding boxes on image.
 
     Draw bounding boxes with class name and optional box score on image.
@@ -43,7 +44,9 @@ def draw_boxes(image, boxes, box_classes, class_names, scores=None):
         A copy of `image` modified with given bounding boxes.
     """
     image = Image.fromarray(np.floor(image * 255 + 0.5).astype('uint8'))
-
+    width,height = image.size
+    writer = Writer(img_name, width, height)
+    
     font = ImageFont.truetype(
         font='font/FiraMono-Medium.otf',
         size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
@@ -59,7 +62,7 @@ def draw_boxes(image, boxes, box_classes, class_names, scores=None):
             label = '{} {:.2f}'.format(box_class, score)
         else:
             label = '{}'.format(box_class)
-
+        
         draw = ImageDraw.Draw(image)
         label_size = draw.textsize(label, font)
 
@@ -74,7 +77,8 @@ def draw_boxes(image, boxes, box_classes, class_names, scores=None):
             text_origin = np.array([left, top - label_size[1]])
         else:
             text_origin = np.array([left, top + 1])
-
+        #add box for voc file
+        writer.addObject(box_class, top, left, bottom, right)
         # My kingdom for a good redistributable image drawing library.
         for i in range(thickness):
             draw.rectangle(
@@ -84,5 +88,5 @@ def draw_boxes(image, boxes, box_classes, class_names, scores=None):
             fill=colors[c])
         draw.text(text_origin, label, fill=(0, 0, 0), font=font)
         del draw
-
+    writer.save(img_name.replace(".jpg",".xml"))
     return np.array(image)

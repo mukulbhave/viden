@@ -34,6 +34,12 @@ parser.add_argument(
     help='path to VOCdevkit directory',
     default='~/data/PascalVOC/VOCdevkit')
 
+parser.add_argument(
+    '-n',
+    '--hdf5_file_name',
+    help='name of output file',
+    default='pascal_voc_07_12.hdf5')
+
 
 def get_boxes_for_id(voc_path, year, image_id):
     """Get object bounding boxes annotations for given image.
@@ -147,7 +153,7 @@ def _main(args):
 
     # Create HDF5 dataset structure
     print('Creating HDF5 dataset structure.')
-    fname = os.path.join(voc_path, 'pascal_voc_07_12.hdf5')
+    fname = os.path.join(voc_path, args.hdf5_file_name)
     voc_h5file = h5py.File(fname, 'w')
     uint8_dt = h5py.special_dtype(
         vlen=np.dtype('uint8'))  # variable length uint8
@@ -179,17 +185,17 @@ def _main(args):
     # process all ids and add to datasets
     print('Processing Pascal VOC 2007 datasets for training set.')
     #last_2007 = add_to_dataset(voc_path, '2007', train_ids_2007, train_images,                               train_boxes)
-    print('Processing Pascal VOC 2012 training set.')
+    print('Processing Pascal VOC  training set.')
     add_to_dataset(
         voc_path,
         'data',
         train_ids,
         train_images,
         train_boxes)
-    print('Processing Pascal VOC 2012 val set.')
+    print('Processing Pascal VOC  val set.')
     #add_to_dataset(voc_path, 'data', val_ids, val_images, val_boxes)
-    print('Processing Pascal VOC 2007 test set.')
-    #add_to_dataset(voc_path, '2007', test_ids, test_images, test_boxes)
+    print('Processing Pascal VOC  test set.')
+    add_to_dataset(voc_path, 'data', test_ids, test_images, test_boxes)
 
     print('Closing HDF5 file.')
     voc_h5file.close()

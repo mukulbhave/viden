@@ -1,10 +1,10 @@
-from PIL import Image
+from PIL import Image,ImageOps
 import os, sys,re
 import numpy as np
 import glob
 
-path = "D:\\MUKUL\\git\\yolo\img-books\\"
-out="D:\\MUKUL\\git\\yolo\img-books\\data\\"
+path = "C:\\dataset\\test\\"
+out="C:\\dataset\\test\\out\\"
 
 dirs = os.listdir( path )
 
@@ -16,30 +16,36 @@ def resize():
         if os.path.isfile(path+item):
             im = Image.open(path+item)
             f, e = os.path.splitext(path+item)
-            imResize = im.resize((608,608), Image.ANTIALIAS)
+            imResize = resize_image(im,416,416)
             imResize.save(out + str(index)+'.jpg', 'JPEG', quality=90)
 
 
 
-def createMatFile(input_path,output_path) :
-    """ A helper function to create  data in mat format  """
-    # imglist = [f for f in glob.glob(input_path)]
-    # size= len(imglist)
-    # dataX = np.empty([size,imglist[0].shape)
-    # dataY = np.empty([size,1])
-    # for img in imglist :
-        # pil_im = Image.open(img)
-		# name=os.path.splitext(img)[0]
-        # x = np.asarray(pil_im)
-        # np.append(dataX,x)
-        # np.append(dataY,img)
-    
-    # data = {}
-    # data['X'] = dataX
-    # data['Y'] = dataY
-    # savemat(output_path,data,True)
-	
 
+	
+def resize_image(img, W,H,debug=True):
+    ''' Expects img to be pil image , resizes if image is bigger than target width and height else padds'''
+    w,h = img.size
+    if debug:
+      print(img.size)
+    w = W if (w > W) else w
+    h = H if ( h > H) else h
+    # shrik the image 
+    image = img.resize((w,h),Image.BICUBIC)
+    w,h = image.size
+   
+    if w < W:
+      w = W-w
+      padding = (w//2, 0, w-(w//2), 0)
+      image = ImageOps.expand(image, padding)
+
+    if h < H:
+      h = H-h
+      padding = (0, h//2, 0, h-(h//2))
+      image = ImageOps.expand(image, padding)
+    if debug:
+      print(image.size)
+    return image
 
 
 resize()

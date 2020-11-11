@@ -83,7 +83,7 @@ def predict_draw(model_body, class_names, anchors, img_path,
 
     # Run prediction on overfit image.
     sess = K.get_session()  # TODO: Remove dependence on Tensorflow session.
-
+    logging = TensorBoard()
     if  not os.path.exists(out_path):
         os.makedirs(out_path)
     #for i in range(len(image_data)):
@@ -98,7 +98,7 @@ def predict_draw(model_body, class_names, anchors, img_path,
     print(out_boxes)
 
 	# Plot image with predicted boxes.
-    image_with_boxes = draw_boxes(image_data[0], out_boxes, out_classes, class_names, out_scores)
+    image_with_boxes = draw_boxes(image_data[0], out_boxes, out_classes, class_names, out_scores,out_path+"\\"+tail)
     
    
 	# Save the image:

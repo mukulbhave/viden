@@ -19,7 +19,7 @@ def _main(args):
 
 
 # Percentage of images to be used for the test set
-    percentage_test = .01;
+    percentage_test = 10;
 
 # Create and/or truncate train.txt and test.txt
     file_train = open(img_path+'train.txt', 'w')  

@@ -4,7 +4,7 @@ This is a script that can be used to retrain the YOLOv2 model for your own datas
 import argparse
 
 import os
-
+from PIL import ImageOps
 import matplotlib.pyplot as plt
 import numpy as np
 import PIL
@@ -12,6 +12,7 @@ import tensorflow as tf
 from keras import backend as K
 from keras.layers import Input, Lambda, Conv2D
 from keras.models import load_model, Model
+from keras import regularizers
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 
 from yad2k.models.keras_yolo import (preprocess_true_boxes, yolo_body,
@@ -48,6 +49,7 @@ YOLO_ANCHORS = np.array(
      (7.88282, 3.52778), (9.77052, 9.16828)))
 
 def _main(args):
+    tf.device("GPU 1")
     data_path = os.path.expanduser(args.data_path)
     classes_path = os.path.expanduser(args.classes_path)
     anchors_path = os.path.expanduser(args.anchors_path)
@@ -66,7 +68,7 @@ def _main(args):
     #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
     #  and an array of images 'images'
 	
-    image_data, boxes = process_data(data['images'], data['boxes'])
+    image_data, boxes = scale_data(data['images'], data['boxes'])
     print(image_data.shape)
     print(boxes.shape)
     anchors = YOLO_ANCHORS
@@ -84,6 +86,28 @@ def _main(args):
         image_set='val', # assumes training/validation split is 0.9
         weights_name='trained_stage_3_best.h5',
         save_all=False)
+        
+    dataTestX = list(f['/test/images'])
+    dataTestY = list(f['/test/boxes'])
+    
+    data = {'images':dataTestX,'boxes':dataTestY}
+    
+    
+    #data = np.load(data_path,allow_pickle=True) # custom data saved as a numpy file.
+    #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
+    #  and an array of images 'images'
+	
+    image_data, boxes = scale_data(data['images'], data['boxes'])
+    print(image_data.shape)
+    print(boxes.shape)
+    
+    draw(model_body,
+        class_names,
+        anchors,
+        image_data,
+        image_set='all', # assumes test set is 0.9
+        weights_name='trained_stage_3_best.h5',
+        save_all=True)
 
 
 def get_classes(classes_path):
@@ -103,7 +127,80 @@ def get_anchors(anchors_path):
     else:
         Warning("Could not open anchors file, using default.")
         return YOLO_ANCHORS
+        
+def resize_image(img, W,H,debug=True):
+    ''' Expects img to be pil image , resizes if image is bigger than target width and height else padds'''
+    w,h = img.size
+    if debug:
+      print(img.size)
+    w = W if (w > W) else w
+    h = H if ( h > H) else h
+    # shrik the image 
+    image = img.resize((w,h),PIL.Image.BICUBIC)
+    w,h = image.size
+   
+    if w < W:
+      w = W-w
+      padding = (w//2, 0, w-(w//2), 0)
+      image = ImageOps.expand(image, padding)
 
+    if h < H:
+      h = H-h
+      padding = (0, h//2, 0, h-(h//2))
+      image = ImageOps.expand(image, padding)
+    if debug:
+      print(image.size)
+    return image
+
+#Exactly Same as process data but handles images of different sizes in dataset
+def scale_data(images, boxes=None):
+    '''processes the data'''
+    img_shape = (416,416)
+    images = [PIL.Image.open(io.BytesIO(i)) for i in images]
+    
+    
+    # Box preprocessing.
+    if boxes is not None: 
+        # Original boxes stored as 1D list of class, x_min, y_min, x_max, y_max.
+        boxes = [box.reshape((-1, 5)) for box in boxes]
+        # Get box parameters as x_center, y_center, box_width, box_height, class.
+        boxes_xy = [0.5 * (box[:, 3:5] + box[:, 1:3]) for box in boxes]
+        boxes_wh = [box[:, 3:5] - box[:, 1:3] for box in boxes]
+        
+        # get original size of each image and and convert the coordinates and w h 
+        processed_images = []
+        for i,img in enumerate(images):
+            orig_size = np.array([images[i].width, images[i].height])
+            boxes_xy[i] = boxes_xy[i] / orig_size
+            boxes_wh[i] = boxes_wh[i] / orig_size
+            #images_i = images[i].resize(img_shape, PIL.Image.BICUBIC)
+            images_i =  resize_image(images[i],img_shape[0],img_shape[1],False)
+            images_i = np.array(images_i, dtype=np.float)
+            processed_images.append(images_i/255)
+        
+        boxes = [np.concatenate((boxes_xy[i], boxes_wh[i], box[:, 0:1]), axis=1) for i, box in enumerate(boxes)]
+
+        # find the max number of boxes
+        max_boxes = 0
+        for boxz in boxes:
+            if boxz.shape[0] > max_boxes:
+                max_boxes = boxz.shape[0]
+
+        # add zero pad for training
+        for i, boxz in enumerate(boxes):
+            if boxz.shape[0]  < max_boxes:
+                zero_padding = np.zeros( (max_boxes-boxz.shape[0], 5), dtype=np.float32)
+                boxes[i] = np.vstack((boxz, zero_padding))
+
+        return np.array(processed_images), np.array(boxes)
+    
+    else:
+        processed_images = [resize_image(i,img_shape[0],img_shape[1],False) for i in images]
+        processed_images = [np.array(image, dtype=np.float) for image in processed_images]
+        processed_images = [image/255. for image in processed_images]
+        return np.array(processed_images)
+        
+        
 def process_data(images, boxes=None):
     '''processes the data'''
     #images = [PIL.Image.fromarray(i) for i in images]
@@ -113,6 +210,8 @@ def process_data(images, boxes=None):
     print(type(images[0]))
     # Image preprocessing.
     processed_images = [i.resize((416, 416), PIL.Image.BICUBIC) for i in images]
+    #processed_images = [resize_image(i,416,416,False) for i in images]
+    
     processed_images = [np.array(image, dtype=np.float) for image in processed_images]
     processed_images = [image/255. for image in processed_images]
 
@@ -207,7 +306,7 @@ def create_model(anchors, class_names, load_pretrained=True, freeze_body=True):
     if freeze_body:
         for layer in topless_yolo.layers:
             layer.trainable = False
-    final_layer = Conv2D(len(anchors)*(5+len(class_names)), (1, 1), activation='linear')(topless_yolo.output)
+    final_layer = Conv2D(len(anchors)*(5+len(class_names)), (1, 1), activation='linear',kernel_regularizer= regularizers.l2(5e-4))(topless_yolo.output)
 
     model_body = Model(image_input, final_layer)
 
@@ -246,7 +345,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
         })  # This is a hack to use the custom loss function in the last layer.
 
 
-    logging = TensorBoard()
+    logging = TensorBoard()#log_dir='./train_logs', histogram_freq=1, write_graph=False, write_images=True)
     checkpoint = ModelCheckpoint("trained_stage_3_best.h5", monitor='val_loss',
                                  save_weights_only=True, save_best_only=True)
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=15, verbose=1, mode='auto')
@@ -254,7 +353,7 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
     model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
               np.zeros(len(image_data)),
               validation_split=validation_split,
-              batch_size=10,
+              batch_size=8,
               epochs=5,
               callbacks=[logging])
     model.save_weights('trained_stage_1.h5')
@@ -271,8 +370,8 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
 
     model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
               np.zeros(len(image_data)),
-              validation_split=0.1,
-              batch_size=10,
+              validation_split=validation_split,
+              batch_size=8,
               epochs=30,
               callbacks=[logging])
 
@@ -280,8 +379,8 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
 
     model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
               np.zeros(len(image_data)),
-              validation_split=0.1,
-              batch_size=10,
+              validation_split=validation_split,
+              batch_size=8,
               epochs=30,
               callbacks=[logging, checkpoint, early_stopping])
 
@@ -311,7 +410,7 @@ def draw(model_body, class_names, anchors, image_data, image_set='val',
     yolo_outputs = yolo_head(model_body.output, anchors, len(class_names))
     input_image_shape = K.placeholder(shape=(2, ))
     boxes, scores, classes = yolo_eval(
-        yolo_outputs, input_image_shape, score_threshold=0.07, iou_threshold=0.)
+        yolo_outputs, input_image_shape, score_threshold=0.7, iou_threshold=0.5)
 
     # Run prediction on overfit image.
     sess = K.get_session()  # TODO: Remove dependence on Tensorflow session.
@@ -331,11 +430,11 @@ def draw(model_body, class_names, anchors, image_data, image_set='val',
 
         # Plot image with predicted boxes.
         image_with_boxes = draw_boxes(image_data[i][0], out_boxes, out_classes,
-                                    class_names, out_scores)
+                                    class_names, out_scores,out_path+"\\"+str(i)+'.jpg')
         # Save the image:
-        if save_all or (len(out_boxes) > 0):
+        if save_all :
             image = PIL.Image.fromarray(image_with_boxes)
-            image.save(os.path.join(out_path,str(i)+'.png'))
+            image.save(os.path.join(out_path,str(i)+'.jpg'))
 
         # To display (pauses the program):
         plt.imshow(image_with_boxes, interpolation='nearest')
