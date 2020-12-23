@@ -1,9 +1,0 @@
-D:\MUKUL\git\yolo\data\obj0.jpg
-D:\MUKUL\git\yolo\data\obj1.jpg
-D:\MUKUL\git\yolo\data\obj2.jpg
-D:\MUKUL\git\yolo\data\obj3.jpg
-D:\MUKUL\git\yolo\data\obj4.jpg
-D:\MUKUL\git\yolo\data\obj5.jpg
-D:\MUKUL\git\yolo\data\obj6.jpg
-D:\MUKUL\git\yolo\data\obj7.jpg
-D:\MUKUL\git\yolo\data\obj8.jpg
