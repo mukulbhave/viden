@@ -17,13 +17,13 @@ import h5py
 import numpy as np
 from PIL import Image
 
-sets_from_2007 = [('2007', 'train'), ('2007', 'val')]
-train_set = [('data', 'train')]
-val_set = [('data', 'val')]
-test_set = [('data', 'test')]
+
+train_set = [('viden_data', 'train')]
+val_set = [('viden_data', 'val')]
+test_set = [('viden_data', 'test')]
 
 classes = [
-    "Title", "Author", "Price"
+    "plate", "no-plate"
 ]
 
 parser = argparse.ArgumentParser(
@@ -188,15 +188,17 @@ def _main(args):
     print('Processing Pascal VOC  training set.')
     add_to_dataset(
         voc_path,
-        'data',
+        'viden_data',
         train_ids,
         train_images,
         train_boxes)
     print('Processing Pascal VOC  val set.')
-    #add_to_dataset(voc_path, 'data', val_ids, val_images, val_boxes)
+    #add_to_dataset(voc_path, 'viden_data', val_ids, val_images, val_boxes)
     print('Processing Pascal VOC  test set.')
-    add_to_dataset(voc_path, 'data', test_ids, test_images, test_boxes)
-
+    add_to_dataset(voc_path, 'viden_data', test_ids, test_images, test_boxes)
+    train_group.attrs['dataset_size'] =  total_train_ids
+    val_group.attrs['dataset_size'] =  len(val_ids)
+    test_group.attrs['dataset_size'] =  len(test_ids)
     print('Closing HDF5 file.')
     voc_h5file.close()
     print('Done.')

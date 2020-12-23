@@ -21,6 +21,8 @@ from yad2k.utils.draw_boxes import draw_boxes
 
 import h5py
 import io
+from yolo_data_gen import *
+
 # Args
 argparser = argparse.ArgumentParser(
     description="Retrain or 'fine-tune' a pretrained YOLOv2 model for your own data.")
@@ -49,7 +51,7 @@ YOLO_ANCHORS = np.array(
      (7.88282, 3.52778), (9.77052, 9.16828)))
 
 def _main(args):
-    tf.device("GPU 1")
+    
     data_path = os.path.expanduser(args.data_path)
     classes_path = os.path.expanduser(args.classes_path)
     anchors_path = os.path.expanduser(args.anchors_path)
@@ -57,57 +59,26 @@ def _main(args):
     class_names = get_classes(classes_path)
     anchors = get_anchors(anchors_path)
    
-    f = h5py.File(data_path,'r+') 
-    dataTrainX = list(f['/train/images'])
-    dataTrainY = list(f['/train/boxes'])
+    dataset = h5py.File(data_path,'r+') 
     
-    data = {'images':dataTrainX,'boxes':dataTrainY}
-    
-    
-    #data = np.load(data_path,allow_pickle=True) # custom data saved as a numpy file.
-    #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
-    #  and an array of images 'images'
-	
-    image_data, boxes = scale_data(data['images'], data['boxes'])
-    print(image_data.shape)
-    print(boxes.shape)
     anchors = YOLO_ANCHORS
 
-    detectors_mask, matching_true_boxes = get_detector_mask(boxes, anchors)
+    #detectors_mask, matching_true_boxes = get_detector_mask(boxes, anchors)
 
     model_body, model = create_model(anchors, class_names)
 
-    train(        model,        class_names,        anchors,        image_data,        boxes,        detectors_mask,        matching_true_boxes    )
+    train(        model,        class_names,        anchors,   dataset)    # image_data,        boxes,        detectors_mask,        matching_true_boxes    )
 
-    draw(model_body,
-        class_names,
-        anchors,
-        image_data,
-        image_set='val', # assumes training/validation split is 0.9
-        weights_name='trained_stage_3_best.h5',
-        save_all=False)
+    # TODO use data generator for draw as well
         
-    dataTestX = list(f['/test/images'])
-    dataTestY = list(f['/test/boxes'])
     
-    data = {'images':dataTestX,'boxes':dataTestY}
-    
-    
-    #data = np.load(data_path,allow_pickle=True) # custom data saved as a numpy file.
-    #  has 2 arrays: an object array 'boxes' (variable length of boxes in each image)
-    #  and an array of images 'images'
-	
-    image_data, boxes = scale_data(data['images'], data['boxes'])
-    print(image_data.shape)
-    print(boxes.shape)
-    
-    draw(model_body,
-        class_names,
-        anchors,
-        image_data,
-        image_set='all', # assumes test set is 0.9
-        weights_name='trained_stage_3_best.h5',
-        save_all=True)
+    # draw(model_body,
+        # class_names,
+        # anchors,
+        # image_data,
+        # image_set='all', # assumes test set is 0.9
+        # weights_name='trained_stage_3_best.h5',
+        # save_all=True)
 
 
 def get_classes(classes_path):
@@ -128,29 +99,7 @@ def get_anchors(anchors_path):
         Warning("Could not open anchors file, using default.")
         return YOLO_ANCHORS
         
-def resize_image(img, W,H,debug=True):
-    ''' Expects img to be pil image , resizes if image is bigger than target width and height else padds'''
-    w,h = img.size
-    if debug:
-      print(img.size)
-    w = W if (w > W) else w
-    h = H if ( h > H) else h
-    # shrik the image 
-    image = img.resize((w,h),PIL.Image.BICUBIC)
-    w,h = image.size
-   
-    if w < W:
-      w = W-w
-      padding = (w//2, 0, w-(w//2), 0)
-      image = ImageOps.expand(image, padding)
 
-    if h < H:
-      h = H-h
-      padding = (0, h//2, 0, h-(h//2))
-      image = ImageOps.expand(image, padding)
-    if debug:
-      print(image.size)
-    return image
 
 #Exactly Same as process data but handles images of different sizes in dataset
 def scale_data(images, boxes=None):
@@ -173,8 +122,8 @@ def scale_data(images, boxes=None):
             orig_size = np.array([images[i].width, images[i].height])
             boxes_xy[i] = boxes_xy[i] / orig_size
             boxes_wh[i] = boxes_wh[i] / orig_size
-            #images_i = images[i].resize(img_shape, PIL.Image.BICUBIC)
-            images_i =  resize_image(images[i],img_shape[0],img_shape[1],False)
+            images_i = images[i].resize(img_shape, PIL.Image.BICUBIC)
+            
             images_i = np.array(images_i, dtype=np.float)
             processed_images.append(images_i/255)
         
@@ -329,7 +278,7 @@ def create_model(anchors, class_names, load_pretrained=True, freeze_body=True):
 
     return model_body, model
 
-def train(model, class_names, anchors, image_data, boxes, detectors_mask, matching_true_boxes, validation_split=0.1):
+def train(model, class_names, anchors, dataset):#image_data, boxes, detectors_mask, matching_true_boxes, validation_split=0.1):
     '''
     retrain/fine-tune the model
 
@@ -350,12 +299,23 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
                                  save_weights_only=True, save_best_only=True)
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=15, verbose=1, mode='auto')
 
-    model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
-              np.zeros(len(image_data)),
-              validation_split=validation_split,
-              batch_size=8,
-              epochs=5,
-              callbacks=[logging])
+    batch_size = 8
+    dataTrain = dataset['train']
+    dataVal=  dataset['test']
+    train_set_size =dataTrain.attrs['dataset_size']
+    val_set_size =dataVal.attrs['dataset_size']
+    training_generator = DataGenerator(dataTrain, train_set_size,batch_size=batch_size)
+    validation_generator = DataGenerator(dataVal, val_set_size,batch_size=batch_size,is_train=0)
+    # model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
+              # np.zeros(len(image_data)),
+              # validation_split=validation_split,
+              # batch_size=8,
+              # epochs=5,
+              # callbacks=[logging])
+    model.fit_generator(generator=training_generator,
+                    validation_data=validation_generator,
+                    use_multiprocessing=False,
+                    epochs=5,verbose = 1, callbacks=[logging])
     model.save_weights('trained_stage_1.h5')
 
     model_body, model = create_model(anchors, class_names, load_pretrained=False, freeze_body=False)
@@ -367,22 +327,33 @@ def train(model, class_names, anchors, image_data, boxes, detectors_mask, matchi
             'yolo_loss': lambda y_true, y_pred: y_pred
         })  # This is a hack to use the custom loss function in the last layer.
 
-
-    model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
-              np.zeros(len(image_data)),
-              validation_split=validation_split,
-              batch_size=8,
-              epochs=30,
-              callbacks=[logging])
-
+    
+    # model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
+              # np.zeros(len(image_data)),
+              # validation_split=validation_split,
+              # batch_size=8,
+              # epochs=30,
+              # callbacks=[logging])
+    training_generator = DataGenerator(dataTrain, train_set_size,batch_size=batch_size)
+    validation_generator = DataGenerator(dataVal, val_set_size,batch_size=batch_size,is_train=0)
+    model.fit_generator(generator=training_generator,
+                    validation_data=validation_generator,
+                    use_multiprocessing=False,
+                    epochs=30,verbose = 1, callbacks=[logging])
     model.save_weights('trained_stage_2.h5')
-
-    model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
-              np.zeros(len(image_data)),
-              validation_split=validation_split,
-              batch_size=8,
-              epochs=30,
-              callbacks=[logging, checkpoint, early_stopping])
+    
+    training_generator = DataGenerator(dataTrain, train_set_size,batch_size=batch_size)
+    validation_generator = DataGenerator(dataVal, val_set_size,batch_size=batch_size,is_train=0)
+    model.fit_generator(generator=training_generator,
+                    validation_data=validation_generator,
+                    use_multiprocessing=False,
+                    epochs=30,verbose = 1, callbacks=[logging, checkpoint, early_stopping])
+    # model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
+              # np.zeros(len(image_data)),
+              # validation_split=validation_split,
+              # batch_size=8,
+              # epochs=30,
+              # callbacks=[logging, checkpoint, early_stopping])
 
     model.save_weights('trained_stage_3.h5')
 
@@ -410,7 +381,7 @@ def draw(model_body, class_names, anchors, image_data, image_set='val',
     yolo_outputs = yolo_head(model_body.output, anchors, len(class_names))
     input_image_shape = K.placeholder(shape=(2, ))
     boxes, scores, classes = yolo_eval(
-        yolo_outputs, input_image_shape, score_threshold=0.7, iou_threshold=0.5)
+        yolo_outputs, input_image_shape, score_threshold=0.7, iou_threshold=0.7)
 
     # Run prediction on overfit image.
     sess = K.get_session()  # TODO: Remove dependence on Tensorflow session.
