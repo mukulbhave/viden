@@ -23,7 +23,7 @@ from retrain_yolo import (create_model,get_classes)
 import keras.backend as K
 import pytesseract
 from crnn.train_crnn import create_crnn_model
-from crnn.crnn_data_gen import *
+#from .crnn.crnn_data_gen import *
                                      
 char_list = string.ascii_letters+string.digits
 
@@ -67,7 +67,7 @@ def _main(args):
     # model to be used at test time
     act_model = create_crnn_model(train=False)
     # load the saved best model weights
-    act_model.load_weights('viden_trained_models\\viden_crnn-23Dec2020.hdf5')
+    act_model.load_weights('viden_trained_models\\viden_crnn28dec2020.hdf5')
 
     class_names = get_classes(classes_path)
     anchors = YOLO_ANCHORS 
