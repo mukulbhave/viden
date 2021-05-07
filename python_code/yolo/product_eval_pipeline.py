@@ -21,9 +21,9 @@ from yad2k.utils.draw_boxes import draw_boxes
 from retrain_yolo import (create_model,get_classes)
 
 import keras.backend as K
-import pytesseract
+
 from crnn.train_crnn import create_crnn_model
-#from .crnn.crnn_data_gen import *
+from crnn.crnn_data_gen import *
                                      
 char_list = string.ascii_letters+string.digits
 
@@ -56,23 +56,21 @@ YOLO_ANCHORS = np.array(
 
 
 def _main(args):
-   # pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+   
     input_path = args.input_path
     out_path = args.out_path
     classes_path =args.classes_path
     outF = open(out_path+"\prediction.txt", "w")
-    # if  not os.path.exists(out_path):
-        # os.makedirs(out_path)
-
+    
     # model to be used at test time
     act_model = create_crnn_model(train=False)
     # load the saved best model weights
-    act_model.load_weights('viden_trained_models\\viden_crnn28dec2020.hdf5')
+    act_model.load_weights('crnn/best_model.hdf5')#viden_trained_models\\viden_crnn30dec2020.hdf5')
 
     class_names = get_classes(classes_path)
     anchors = YOLO_ANCHORS 
     yolo_model_body, yolo_model = create_model(anchors, class_names)
-    yolo_model_body.load_weights('viden_trained_models\\viden_yolo_17dec2020.h5')#'trained-models/yolo_4dec2020_3_best.h5')
+    yolo_model_body.load_weights('viden_trained_models\\viden_model_29april2021.h5')#'trained-models/yolo_4dec2020_3_best.h5')
 
     yolo_outputs = yolo_head(yolo_model_body.output, anchors, len(class_names))
     yolo_input_image_shape = K.placeholder(shape=(2, ))

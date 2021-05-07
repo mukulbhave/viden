@@ -50,12 +50,13 @@ for pathAndFilename in glob.iglob(img_path+"*.jpg"):
   txt = tail.split('_')[1]
 # see the results
   i = 0
+  le= min(10,out.shape[1])
   print(out.shape)
   for x in out:
     print(txt)
-    for p in x:  
-        if int(p) != -1:
-            print(char_list[int(p)], end = '')       
+    for p in range(0, le):  
+        if int(x[p]) != -1:
+            print(char_list[int(x[p])], end = '')       
     print('\n')
     i+=1
     

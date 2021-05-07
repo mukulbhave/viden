@@ -299,7 +299,7 @@ def train(model, class_names, anchors, dataset):#image_data, boxes, detectors_ma
                                  save_weights_only=True, save_best_only=True)
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0, patience=15, verbose=1, mode='auto')
 
-    batch_size = 8
+    batch_size = 32
     dataTrain = dataset['train']
     dataVal=  dataset['test']
     train_set_size =dataTrain.attrs['dataset_size']
@@ -347,7 +347,7 @@ def train(model, class_names, anchors, dataset):#image_data, boxes, detectors_ma
     model.fit_generator(generator=training_generator,
                     validation_data=validation_generator,
                     use_multiprocessing=False,
-                    epochs=30,verbose = 1, callbacks=[logging, checkpoint, early_stopping])
+                    epochs=100,verbose = 1, callbacks=[logging, checkpoint, early_stopping])
     # model.fit([image_data, boxes, detectors_mask, matching_true_boxes],
               # np.zeros(len(image_data)),
               # validation_split=validation_split,
