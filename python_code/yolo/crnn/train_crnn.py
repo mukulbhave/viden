@@ -129,10 +129,10 @@ def create_crnn_model(train=True,max_label_len=0):
   squeezed = Lambda(lambda x: K.squeeze(x, 1))(conv_7)
  
   # bidirectional LSTM layers with units=128
-  blstm_1 = Bidirectional(LSTM(128, return_sequences=True, dropout = 0.2))(squeezed)
-  blstm_2 = Bidirectional(LSTM(128, return_sequences=True, dropout = 0.2))(blstm_1)
+  blstm_1 = Bidirectional(LSTM(128, return_sequences=True, dropout = 0.3))(squeezed)
+  blstm_2 = Bidirectional(LSTM(128, return_sequences=True, dropout = 0.3))(blstm_1)
  
-  outputs = Dense(len(char_list)+1, activation = 'softmax')(squeezed)
+  outputs = Dense(len(char_list)+1, activation = 'softmax')(blstm_2)
   if(train):
     #model to be used at training time
     labels = Input(name='the_labels', shape=[max_label_len], dtype='float32')
@@ -142,7 +142,7 @@ def create_crnn_model(train=True,max_label_len=0):
     loss_out = Lambda(ctc_lambda_func, output_shape=(1,), name='ctc')([outputs, labels, input_length, label_length])
     model = Model(inputs=[inputs, labels, input_length, label_length], outputs=loss_out)
 #lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=None, schedule_decay=0.004
-    model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer = Adam(lr=0.001))
+    model.compile(loss={'ctc': lambda y_true, y_pred: y_pred}, optimizer = Adam(lr=0.0005))
 
     return model
   

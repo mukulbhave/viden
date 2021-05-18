@@ -65,12 +65,12 @@ def _main(args):
     # model to be used at test time
     act_model = create_crnn_model(train=False)
     # load the saved best model weights
-    act_model.load_weights('crnn/best_model.hdf5')#viden_trained_models\\viden_crnn30dec2020.hdf5')
+    act_model.load_weights('viden_trained_models\\viden_crnn_14May2021.hdf5')
 
     class_names = get_classes(classes_path)
     anchors = YOLO_ANCHORS 
     yolo_model_body, yolo_model = create_model(anchors, class_names)
-    yolo_model_body.load_weights('viden_trained_models\\viden_model_29april2021.h5')#'trained-models/yolo_4dec2020_3_best.h5')
+    yolo_model_body.load_weights('viden_trained_models\\viden_yolo_14May2021.h5')
 
     yolo_outputs = yolo_head(yolo_model_body.output, anchors, len(class_names))
     yolo_input_image_shape = K.placeholder(shape=(2, ))
@@ -84,7 +84,7 @@ def _main(args):
         orig_img_name=''
         print("Evaluating :"+img_path)
         start_time = time.time()
-        pred_boxes,pred_box_classes = get_bounding_boxes(yolo_model_body,boxes, scores, classes,yolo_input_image_shape,img_path,class_names,out_path)
+        pred_boxes,pred_box_classes = get_bounding_boxes(yolo_model_body,boxes, scores, classes,yolo_input_image_shape,img_path,class_names,out_path,save=True)
         outF.write("File Name:"+img_path)
         outF.write("\n")
         for i, box in list(enumerate(pred_boxes)):
@@ -94,16 +94,14 @@ def _main(args):
             image = PIL.Image.open(img_path)
             pred_obj_img = image.crop((left,top,right,bottom))
             txt=get_text(act_model,pred_obj_img,box_class)
-            #txt = pytesseract.image_to_string(pred_obj_img, config=config)
-            #txt.replace("\x0C",'')
-            #txt=re.split('\n',txt)[0]
+            
             outF.write(box_class+":"+txt)
             outF.write("\n")
             print(txt)
             _,tail = ntpath.split(img_path)
             orig_img_name =os.path.splitext(tail)[0]
             
-            #pred_obj_img.save(out_path+"\\"+orig_img_name+"_"+str(i)+"_"+box_class+".jpg")
+            pred_obj_img.save(out_path+"\\"+txt+"_"+str(i)+"_"+box_class+".jpg")
         end_time = time.time()
         time_lst.append(end_time-start_time)
         orig_img_name_lst.append(orig_img_name)

@@ -20,7 +20,7 @@ from pathlib import Path
 from train_crnn import create_crnn_model
 from util import process_data
 char_list = string.ascii_letters+string.digits
-img_path="C:\\dataset\\viden_test\\test_plates\\"
+img_path="C:\\dataset\\viden_test\\test_plates2\\"
 
 
 
@@ -45,7 +45,7 @@ for pathAndFilename in glob.iglob(img_path+"*.jpg"):
 
 # use CTC decoder
   out = K.get_value(K.ctc_decode(prediction, input_length=np.ones(prediction.shape[0])*prediction.shape[1],
-                         greedy=True)[0][0])
+                         greedy=False)[0][0])
   head, tail = ntpath.split(pathAndFilename)
   txt = tail.split('_')[1]
 # see the results

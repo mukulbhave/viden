@@ -1,22 +1,11 @@
 from PIL import Image
-import os, sys,re
+import os, sys,re , fnmatch
 import numpy as np
 import glob
 
-path = "C:\git\yolo\img-books\data\\"
-out="C:\git\yolo\img-books\data\\"
+input_path = "C:\\Users\\sudhir\\Downloads\\EngImg\\"
+out="C:\\dataset\\viden_numberplates\\out\\"
 
-dirs = os.listdir( path )
-def saveAsJpg():
-    for index,item in enumerate(dirs):
-        print(item)
-        if  item.endswith(".png"):
-        #if os.path.isfile(path+item):
-            im = Image.open(path+item)
-            rgb_im = im.convert('RGB')
-            f, e = os.path.splitext(path+item)
-            rgb_im.save(out + str(index)+'.jpg', 'JPEG', quality=90)
-            
 def rename():
     for index,item in enumerate(dirs):
         
@@ -28,5 +17,21 @@ def rename():
             
 
 
-
-rename()
+def convert_png_to_jpg():
+    count = 1
+    for root, dirnames, filenames in os.walk(input_path):
+        print("processing:  "+root)
+        for f_name in fnmatch.filter(filenames, '*.png'):
+            file_path=os.path.join(root, f_name)
+            print("reading file:  "+file_path)
+            im = Image.open(file_path)
+            rgb_im = im.convert('RGB')
+            f_name=f_name.replace(".png",".jpg")
+            out_path= os.path.join(out, f_name)
+            print("saving:  "+out_path)
+            rgb_im.save(out_path, 'JPEG', quality=90)
+            
+            count+=1
+    print("Processed Files:"+str(count))        
+            
+convert_png_to_jpg()

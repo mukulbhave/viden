@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 char_list = string.ascii_letters+string.digits
 max_label_len = 31
 val_percentage = 10
-MAX_COUNT = 100000; #// dataset size 
+MAX_COUNT = 300000; #// dataset size 
 parser = argparse.ArgumentParser(
     description='Text detection dataset to HDF5.')
 parser.add_argument(
