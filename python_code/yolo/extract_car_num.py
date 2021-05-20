@@ -41,19 +41,26 @@ class CarNumberDetector:
             self.yolo_outputs, self.yolo_input_image_shape,max_boxes=1, score_threshold=.7, iou_threshold=0.5)
         
     
-    def extract_number(self,orig_image,save=False):
+    def extract_number(self,orig_image_url=None,image_array=None,save=False):
         """
         This is the primary method to detect number plate on car and fetch the number.
-        orig_image is the numpy array representing original car image
+        image_array is the numpy array representing original car image
         method returns numpy array of image with bounding box ad the extracted car_number string
         """
-        pred_boxes,pred_box_classes,img_with_boxes = self.get_bounding_boxes(orig_image)
+        if( image_array is None and orig_image_url is None):
+            raise ValueError("image array or url is required")
+        if(orig_image_url is not None):
+            image = PIL.Image.open(orig_image_url)
+        else:
+            image = PIL.Image.fromarray(image_array)
+        pred_boxes,pred_box_classes,img_with_boxes = self.get_bounding_boxes(image)
         pred_txt=''
+        
         for i, box in list(enumerate(pred_boxes)):
             box_class = class_names[pred_box_classes[i]]
-           # box = pred_boxes[i]
+           
             top, left, bottom, right = box
-            image = PIL.Image.fromarray(orig_image)
+            
             pred_obj_img = image.crop((left,top,right,bottom))
             
             pred_txt=self.get_text(pred_obj_img)
@@ -89,10 +96,9 @@ class CarNumberDetector:
         return s
         
     
-    def get_bounding_boxes(self,orig_img):
+    def get_bounding_boxes(self,image):
         image_shape = (416, 416) 
-        #image = PIL.Image.open(orig_img)
-        image = PIL.Image.fromarray(orig_img)
+        
         resized_image =image.resize(tuple(image_shape), PIL.Image.BICUBIC)
         image_data = np.array(resized_image, dtype='float32')
         image_data /= 255.
