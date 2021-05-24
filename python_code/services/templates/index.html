@@ -1,5 +1,10 @@
 <html>
-<head><title>Demo Car License Number </title></head>
+<head><title>Demo Car License Number </title>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+
+
+</head>
 
 <body>
 Demo of Car License Number Extraction using Deep Learning Model with tensorflow and Keras
@@ -7,4 +12,39 @@ Demo of Car License Number Extraction using Deep Learning Model with tensorflow 
 Card Image :<input type=file name="image" ID="image"/>
 <input type=submit />
 </form>
+
+<div id="result">Result</div>
+
+<script>
+            /* attach a submit handler to the form */
+            $("#carForm").submit(function(event) {
+
+                /* stop form from submitting normally */
+                event.preventDefault();
+				
+				  var $form = $(this),
+                    
+                    url = $form.attr('action');
+				 $.ajax( {
+						url: url,
+						method: 'POST',
+						type: 'POST',
+					  data: new FormData( this ),
+					  processData: false,
+					  contentType: false,
+					   success: function(data) {
+					
+							var content = $(data);
+							$("#result").append(content);
+						}
+					  
+					} );
+                /* get some values from elements on the page: */
+              
+					
+                /* stop form from submitting normally */
+                event.preventDefault();
+
+               } ); 
+        </script>
 </body></html>
