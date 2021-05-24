@@ -2,10 +2,15 @@ from flask import Flask
 from flask_restful import Api, Resource
 from flask_restful import Resource, reqparse
 import werkzeug
+from flask import render_template
 
 app = Flask(__name__)
 api = Api(app)
 
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 class ProcessImageEndpoint(Resource):
     def __init__(self):
@@ -25,8 +30,10 @@ class ProcessImageEndpoint(Resource):
         if image_file:
             # Get the byte content using `.read()`
             image = image_file.read()
+            
             # Now do something with the image...
             return "Yay, you sent an image!" + str(image)
+		
         else:
             return "No image sent :("
 
