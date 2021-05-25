@@ -8,9 +8,21 @@ from base64 import encodebytes
 from PIL import Image
 from flask import jsonify
 
+import numpy as np
+import sys
+sys.path.append("..")
+
+from yolo.extract_car_num import CarNumberDetector
+
+print(sys.path)
+
 app = Flask(__name__)
 api = Api(app)
 
+yolo_model_path="../viden_trained_models/viden_yolo.h5"
+crnn_model_path="../viden_trained_models/viden_crnn.h5"
+classes_path="../yolo/classes.txt"
+output_path="../output/"
 
 @app.route("/")
 def index():
@@ -24,7 +36,7 @@ class ProcessImageEndpoint(Resource):
         # Sending more info in the form? simply add additional arguments, with the location being 'form'
         # parser.add_argument("other_arg", type=str, location='form')
         self.req_parser = parser
-
+        self.cd = CarNumberDetector(yolo_model_path,crnn_model_path,classes_path,output_path)
         # This method is called when we send a POST request to this endpoint
 
     def post(self):
@@ -35,15 +47,17 @@ class ProcessImageEndpoint(Resource):
             # Get the byte content using `.read()`
             image = image_file.read()
             image = Image.open(io.BytesIO(image))
+            img_arr=np.asarray(image)
+            image,car_num=cd.extract_number(img_arr,True)
             byte_arr = io.BytesIO()
             image.save(byte_arr, format='PNG') # convert the PIL image to byte array
             encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii')
             # Now do something with the image...
-            return jsonify( licenseNumber=12345,carImage=encoded_img )
+            return jsonify( licenseNumber=car_num,carImage=encoded_img )
 		
         else:
             return "No image sent :("
-
-
+		
+		
 api.add_resource(ProcessImageEndpoint, '/predict')
 app.run(debug=True)
