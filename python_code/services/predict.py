@@ -3,6 +3,10 @@ from flask_restful import Api, Resource
 from flask_restful import Resource, reqparse
 import werkzeug
 from flask import render_template
+import io
+from base64 import encodebytes
+from PIL import Image
+from flask import jsonify
 
 app = Flask(__name__)
 api = Api(app)
@@ -30,9 +34,12 @@ class ProcessImageEndpoint(Resource):
         if image_file:
             # Get the byte content using `.read()`
             image = image_file.read()
-            
+            image = Image.open(io.BytesIO(image))
+            byte_arr = io.BytesIO()
+            image.save(byte_arr, format='PNG') # convert the PIL image to byte array
+            encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii')
             # Now do something with the image...
-            return "Yay, you sent an image!" + str(image)
+            return jsonify( licenseNumber=12345,carImage=encoded_img )
 		
         else:
             return "No image sent :("
