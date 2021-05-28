@@ -2,17 +2,61 @@
 <head><title>Demo Car License Number </title>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
+<script>
+body {
+  font-family: Verdana, sans-serif;
+}
+input[type=button], input[type=submit], input[type=reset] {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 2px;
+}
 
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width:40%
+  height:40%
+}
+
+.container {
+  width: 500px;
+  clear: both;
+}
+
+.container input {
+  width: 100%;
+  clear: both;
+}
+form  { display: table;      }
+p     { display: table-row;  }
+label { display: table-cell; }
+input { display: table-cell; }
+</script>
 
 </head>
 
-<body>
-Demo of Car License Number Extraction using Deep Learning Model with tensorflow and Keras
-<form id="carForm" action="predict" method="POST" enctype="multipart/form-data">
-Card Image :<input type=file name="image" ID="image"/>
-<input type=submit />
-</form>
+<body align="center">
+</div><h2>Demo of Car License Number Extraction </h2>
+<p>Built on tensorflow and Keras</p> </div>
+<h4><p> The evaultion pipe line is based on yolo v2 and LSTM with  model trained on custom data. </p>
 
+<div class="container">
+<form id="carForm" action="predict" method="POST" enctype="multipart/form-data">
+<p>
+<label>Card Image </label><input type=file name="image" ID="image" accept="*.jpg"/>
+</p>
+<p>
+<label></label><input type=submit value="Evaluate"/>
+</p>
+</form>
+</div>
 <div id="result">Result</div>
 
 <script>
@@ -42,7 +86,7 @@ Card Image :<input type=file name="image" ID="image"/>
 							var resultPlaceholder = $('#result');
 							
 							var img_res='<b> Lincese Number :</b>'+content[0].licenseNumber
-							+"<img src='" + "data:image/jpg;base64,"
+							+"</br><img style='width:40%;height:40%;' src='" + "data:image/jpg;base64,"
 							+ content[0].carImage + "'/>";
 							$("#result").html(img_res)
 							

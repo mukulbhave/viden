@@ -32,7 +32,7 @@ class CarNumberDetector:
         #print(class_names)
         self.out_path=out_path
         #self.anchors = YOLO_ANCHORS 
-        self.yolo_model_body, self.yolo_model = create_model(YOLO_ANCHORS, class_names)
+        self.yolo_model_body, self.yolo_model = create_model(YOLO_ANCHORS, class_names,load_pretrained=False,freeze_body=False)
         self.yolo_model_body.load_weights(viden_yolo_weights_path)#'viden_trained_models\\viden_yolo_14May2021.h5')
         self.yolo_outputs = yolo_head(self.yolo_model_body.output, YOLO_ANCHORS, len(class_names))
         self.yolo_input_image_shape = K.placeholder(shape=(2, ))
@@ -68,11 +68,11 @@ class CarNumberDetector:
         # Save the image:
         if save:
             time_param= int(round(time.time() * 1000))
-            orig_img_name = self.out_path+"\\"+pred_txt+"-"+str(time_param)+".jpg"
+            orig_img_name = self.out_path+pred_txt+"-"+str(time_param)+".jpg"
             orig_image = PIL.Image.fromarray(img_with_boxes)
             orig_image.save(orig_img_name)
             
-        return (img_with_boxes,pred_txt)
+        return (orig_image,pred_txt)
         
     
     def get_text(self,pil_image):

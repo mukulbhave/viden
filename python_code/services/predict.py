@@ -10,17 +10,17 @@ from flask import jsonify
 
 import numpy as np
 import sys
-sys.path.append("..")
 
-from yolo.extract_car_num import CarNumberDetector
 
-print(sys.path)
+from extract_car_num import CarNumberDetector
+
+
 
 app = Flask(__name__)
 api = Api(app)
 
-yolo_model_path="../viden_trained_models/viden_yolo.h5"
-crnn_model_path="../viden_trained_models/viden_crnn.h5"
+yolo_model_path="../yolo/viden_trained_models/viden_yolo.h5"
+crnn_model_path="../yolo/viden_trained_models/viden_crnn.h5"
 classes_path="../yolo/classes.txt"
 output_path="../output/"
 
@@ -48,7 +48,7 @@ class ProcessImageEndpoint(Resource):
             image = image_file.read()
             image = Image.open(io.BytesIO(image))
             img_arr=np.asarray(image)
-            image,car_num=cd.extract_number(img_arr,True)
+            image,car_num=self.cd.extract_number(image_array=img_arr,save=True)
             byte_arr = io.BytesIO()
             image.save(byte_arr, format='PNG') # convert the PIL image to byte array
             encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii')
