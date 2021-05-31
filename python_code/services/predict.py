@@ -60,4 +60,4 @@ class ProcessImageEndpoint(Resource):
 		
 		
 api.add_resource(ProcessImageEndpoint, '/predict')
-app.run(debug=True)
+app.run(debug=True,host='0.0.0.0')
