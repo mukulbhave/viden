@@ -1,10 +1,10 @@
 
-<h2>Vehicle Identification(Viden)</h2>
+<h2>Vehicle Identification(Viden) For Indian License Plates</h2>
 <center>This application is built on custom trained  Deep Learning Neural Network Models</center>  
 <h3>Demo App</h3>
 
-The Demo app is hosted on Google Cloud. [Launch](https://viden-n6rafmjufa-el.a.run.app)
-
+The Demo app is hosted on Google Cloud. <a href="https://viden-n6rafmjufa-el.a.run.app" target="_blank">Launch the app.</a></br>
+You may quickly test with  [test_sample_img](test_sample_img)
 <h3>Sample Input Output</h3>
 <table>
 <tr>
@@ -26,7 +26,7 @@ The goal is to create a service to detect fraud in license plate usage by way of
   <img src="img/flow.svg" width="550" height="450" align="center">                 
 
 Currently we have created deep learning model to detect and recognise car license plate number only due to resource constraints.
-Even just for cars our tarining dataset was comparitively small (~300) car images downloaded from internet. For text detection 
+Even just for cars our training dataset was comparitively small (~300) car images downloaded from internet. For text detection 
 model we used a synthetic dataset. The dataset size was ~50k images which is comparitively smaller.CRNN+CTC model was trained 
 on 8Gib GPU. The training ,validation and test set were in 80:10:10 ratio in both models training. 
 

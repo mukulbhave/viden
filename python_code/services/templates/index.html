@@ -15,7 +15,7 @@ The evaultion pipe line is based on yolo v2 and cnn+rnn+ctc models trained on cu
 <div class="container">
 <form id="carForm" action="predict" method="POST" enctype="multipart/form-data">
 <p>
-<label>Card Image </label><input type=file name="image" ID="image" accept=".jpg"/>
+<label>Car Image </label><input type=file name="image" ID="image" accept=".jpg"/>
 </p>
 <p>
 <label></label><input type=submit value="Evaluate"/>
@@ -23,6 +23,7 @@ The evaultion pipe line is based on yolo v2 and cnn+rnn+ctc models trained on cu
 </form>
 </div>
 <div id="result">Result</div>
+<h5><a href="https://vahan.nic.in/nrservices/faces/user/citizen/citizenlogin.xhtml">For more information: https://vahan.nic.in/nrservices/faces/user/citizen/citizenlogin.xhtml</a></h5>
 
 <script>
 			
@@ -50,7 +51,7 @@ The evaultion pipe line is based on yolo v2 and cnn+rnn+ctc models trained on cu
 							
 							var resultPlaceholder = $('#result');
 							
-							var img_res='<b> Lincese Number :</b>'+content[0].licenseNumber
+							var img_res='<b> License Plate Number :</b>'+content[0].licenseNumber
 							+"</br><img style='width:40%;height:40%;' src='" + "data:image/jpg;base64,"
 							+ content[0].carImage + "'/>";
 							$("#result").html(img_res)
@@ -88,4 +89,5 @@ var ext = filename.split('.').pop();
 };
 
 </script>
-</body></html>
+</body>
+</html>
