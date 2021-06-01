@@ -26,7 +26,7 @@ The goal is to create a service to detect fraud in license plate usage by way of
   <img src="img/flow.svg" width="550" height="450" align="center">                 
 
 Currently we have created deep learning model to detect and recognise car license plate number only due to resource constraints.
-Even just for cars our tarining dataset was comparitively small (~300) car images downloaded from internet. For text detection 
+Even just for cars our training dataset was comparitively small (~300) car images downloaded from internet. For text detection 
 model we used a synthetic dataset. The dataset size was ~50k images which is comparitively smaller.CRNN+CTC model was trained 
 on 8Gib GPU. The training ,validation and test set were in 80:10:10 ratio in both models training. 
 
