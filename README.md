@@ -1,17 +1,4 @@
 
-.column {
-  float: left;
-  width: 33.33%;
-  padding: 5px;
-}
-
-/* Clear floats after image containers */
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
 <h2>Vehicle Identification(Viden)</h2>
 
 The goal is to create a service to detect fraud in license plate usage by way of 
@@ -32,11 +19,11 @@ the last two layers. The model is trained for 30 epochs used the learning rate ,
 training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 
 <h4>YOLOv2 Training and Validation Loss for Car License Plate Detection</h4>
-<div class="row">
-<div class="column"><img src="img/loss.svg" width="300" height="300"> </div>
-<div class="column"> <img src="img/val_loss.svg" width="300" height="300"> 
-</div>
-</div>
+<table>
+<tr><td><img src="img/loss.svg" width="300" height="300"> </td>
+  <td> <img src="img/val_loss.svg" width="300" height="300"> </td>
+</tr>
+</table>
 
 
 <h4>CNN+RNN+CTC Training and Validation Loss For License Number Recognition</h4>
