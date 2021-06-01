@@ -8,7 +8,7 @@
 <h3>Sample Input Output</h3>
 <table>
 <tr>
-<td><img src="test_sample_img/2.JPG" width="300" height="300"> </td>
+<td><img src="test_sample_img/2.jpg" width="300" height="300"> </td>
 <td><img src="test_sample_img/Sample_output.JPG" width="300" height="300"> </td>
 </tr>
 <tr>
@@ -23,7 +23,7 @@ The goal is to create a service to detect fraud in license plate usage by way of
 3. Use vehicle number from step 1 to fetch vehicle details from govt vehicle database 
    using Vahan e-services and flag any discrepancy found.
   
-  <img src="img/flow.svg" width="550" height="450">                 
+  <img src="img/flow.svg" width="550" height="450" align="center">                 
 
 Currently we have created deep learning model to detect and recognise car license plate number only due to resource constraints.
 Even just for cars our tarining dataset was comparitively small (~300) car images downloaded from internet. For text detection 
@@ -53,10 +53,7 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
  
 
 
- 
- 
- 
-<h3>Tech Stack
+ <h3>Tech Stack
 1. Html/jquery
 2. Python , TensorFlow and Keras,Flask
 3. YOLOv2 YAD2K model for license plate detection
@@ -64,9 +61,7 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 5. Docker and GCP for deployment
 
 
-Implementation References
-
-
+References
 YOLOv2 YAD2K refrence https://github.com/allanzelener/YAD2K
 
 CRNN+CTC Model https://github.com/TheAILearner/A-CRNN-model-for-Text-Recognition-in-Keras
