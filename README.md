@@ -3,7 +3,7 @@
 
 <h3>Demo App</h3>
 
-![The Demo app is hosted on Google Cloud Run]:( https://viden-n6rafmjufa-el.a.run.app)
+The Demo app is hosted on Google Cloud. [Launch](https://viden-n6rafmjufa-el.a.run.app)
 
 <h3>Sample Input Output</h3>
 <table>
