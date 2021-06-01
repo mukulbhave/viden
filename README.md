@@ -1,4 +1,4 @@
-<script>
+
 .column {
   float: left;
   width: 33.33%;
@@ -11,7 +11,7 @@
   clear: both;
   display: table;
 }
-</script>
+
 <h2>Vehicle Identification(Viden)</h2>
 
 The goal is to create a service to detect fraud in license plate usage by way of 
