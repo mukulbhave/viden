@@ -1,13 +1,29 @@
 
 <h2>Vehicle Identification(Viden)</h2>
 
+<h3>Demo App</h3>
+
+[The Demo app is hosted on Google Cloud Run]:( https://viden-n6rafmjufa-el.a.run.app)
+
+<h3>Sample Input Output</h3>
+<table>
+<tr>
+<td><img src="test_sample_img/2.JPG" width="300" height="300"> </td>
+<td><img src="test_sample_img/Sample_output.JPG" width="300" height="300"> </td>
+</tr>
+<tr>
+<td>Input Image</td>
+<td>Output Image</td>
+</tr>
+</table>
+
 The goal is to create a service to detect fraud in license plate usage by way of 
 1. Identifying vehicle  license plate number.
 2. Vehicle make, model 
 3. Use vehicle number from step 1 to fetch vehicle details from govt vehicle database 
    using Vahan e-services and flag any discrepancy found.
   
-  <img src="img/flow.svg" width="450" height="350">                 
+  <img src="img/flow.svg" width="550" height="450">                 
 
 Currently we have created deep learning model to detect and recognise car license plate number only due to resource constraints.
 Even just for cars our tarining dataset was comparitively small (~300) car images downloaded from internet. For text detection 
@@ -28,28 +44,14 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 
 
 <h4>CNN+RNN+CTC Training and Validation Loss For License Number Recognition</h4>
-
+<table>
 <tr><td><img src="img/loss_CRNN.svg" width="300" height="300">  </td>
   <td> <img src="img/val_loss_CRNN.svg" width="300" height="300">  </td>
 </tr>
    <tr><td>Training Loss</td><td>Validation Loss</td></tr>
 </table>         
  
-<h3>Demo App</h3>
 
-[The Demo app is hosted on Google Cloud Run]:( https://viden-n6rafmjufa-el.a.run.app)
-
-<h3>Sample Input Output</h3>
-<table>
-<tr>
-<td><img src="test_sample_img/2.JPG" width="300" height="300"> </td>
-<td><img src="test_sample_img/Sample_output.JPG" width="300" height="300"> </td>
-</tr>
-<tr>
-<td>Input Image</td>
-<td>Output Image</td>
-</tr>
-</table>
 
  
  
