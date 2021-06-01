@@ -5,28 +5,28 @@ The goal is to create a service to detect fraud in license plate usage by way of
 2. Vehicle make, model 
 3. Use vehicle number from step 1 to fetch vehicle details from govt vehicle database 
    using Vahan e-services and flag any discrepancy found.
-  <img src="img/flow.svg" width="100" height="100">                 
+  <img src="img/flow.svg" width="300" height="300">                 
 Currently we have created deep learning model to detect and recognise car license plate number only due to resource constraints.Even just for cars our tarining dataset was comparitively small (~300) car images downloaded from internet. For text detection model we used a synthetic dataset. The dataset size was ~50k images which is comparitively smaller.CRNN+CTC model was trained on 8Gib GPU. The training ,validation and test set were in 80:10:10 ratio in both models training. 
 
 For YOLOv2 training we started with the pretrained weights of the Darknet and fine-tuned the model by changing the weights of the last two layers. The model is trained for 30 epochs used the learning rate , weight decay and momentum  same as used for training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 
 YOLOv2 Training and Validation Loss for Car License Plate Detection
-![Training Loss](img/loss.svg=100x)                  ![Validation Loss](img/val_loss.svg=100x100)
+<img src="img/loss.svg" width="300" height="300">  <img src="img/val_loss.svg" width="300" height="300"> 
 
 
 CNN+RNN+CTC Training and Validation Loss For License Number Recognition
 
-![Training Loss](img/loss_CRNN.svg)                  ![Validation Loss](img/val_loss_CRNN.svg)
-
+<img src="img/loss_CRNN.svg" width="300" height="300">   <img src="img/val_loss_CRNN.svg" width="300" height="300">          
+ 
 ##Demo App
 
 [The Demo app is hosted on Google Cloud Run]:( https://viden-n6rafmjufa-el.a.run.app)
 
 ### Sample Input Output
 ####Input Image
-![Car Image](test_sample_img/2.jpg)
+ <img src="test_sample_img/2.JPG" width="300" height="300"> 
 ####Output 
-![Car License Number ](test_sample_img/Sample_output.JPG)
+ <img src="test_sample_img/Sample_output.JPG" width="300" height="300"> 
 
 ##Tech Stack
 1. Html/jquery
