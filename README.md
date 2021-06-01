@@ -40,17 +40,16 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 [The Demo app is hosted on Google Cloud Run]:( https://viden-n6rafmjufa-el.a.run.app)
 
 <h3>Sample Input Output</h3>
-<div>
-<div class="row">
-<div class="column"><img src="test_sample_img/2.JPG" width="300" height="300"> </div>
-<div class="column"><img src="test_sample_img/Sample_output.JPG" width="300" height="300"> 
-</div>
-</div>
-<div class="row">
-<div class="column">Input Image</div>
-<div class="column">Output Image</div>
-</div>
-</div>
+<table>
+<tr>
+<td><img src="test_sample_img/2.JPG" width="300" height="300"> </td>
+<td><img src="test_sample_img/Sample_output.JPG" width="300" height="300"> </td>
+</tr>
+<tr>
+<td>Input Image</td>
+<td>Output Image</td>
+</tr>
+</table>
 
  
  
