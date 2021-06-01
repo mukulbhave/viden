@@ -11,7 +11,7 @@ Currently we have created deep learning model to detect and recognise car licens
 For YOLOv2 training we started with the pretrained weights of the Darknet and fine-tuned the model by changing the weights of the last two layers. The model is trained for 30 epochs used the learning rate , weight decay and momentum  same as used for training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 
 YOLOv2 Training and Validation Loss for Car License Plate Detection
-![Training Loss](img/loss.svg)                  ![Validation Loss](img/val_loss.svg)
+![Training Loss](img/loss.svg=100x100)                  ![Validation Loss](img/val_loss.svg=100x100)
 
 
 CNN+RNN+CTC Training and Validation Loss For License Number Recognition
@@ -24,9 +24,9 @@ CNN+RNN+CTC Training and Validation Loss For License Number Recognition
 
 ### Sample Input Output
 ####Input Image
-![Car Image](test_sample_img/1.jpg)
+![Car Image](test_sample_img/2.jpg)
 ####Output 
-![Car License Number ](test_sample_img/Sample_output.jpg)
+![Car License Number ](test_sample_img/Sample_output.JPG)
 
 ##Tech Stack
 1. Html/jquery
