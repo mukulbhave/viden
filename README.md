@@ -1,6 +1,6 @@
 
 <h2>Vehicle Identification(Viden)</h2>
-
+<center>This application is built on custom trained  Deep Learning Neural Network Models</center>  
 <h3>Demo App</h3>
 
 The Demo app is hosted on Google Cloud. [Launch](https://viden-n6rafmjufa-el.a.run.app)
@@ -18,8 +18,8 @@ The Demo app is hosted on Google Cloud. [Launch](https://viden-n6rafmjufa-el.a.r
 </table>
 
 The goal is to create a service to detect fraud in license plate usage by way of 
-1. Identifying vehicle  license plate number.
-2. Vehicle make, model 
+1. Identifying vehicle  license plate number .
+2. Identifying Vehicle make, model
 3. Use vehicle number from step 1 to fetch vehicle details from govt vehicle database 
    using Vahan e-services and flag any discrepancy found.
   
