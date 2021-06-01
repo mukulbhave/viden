@@ -23,15 +23,17 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 <tr><td><img src="img/loss.svg" width="300" height="300"> </td>
   <td> <img src="img/val_loss.svg" width="300" height="300"> </td>
 </tr>
+   <tr><td>Training Loss</td><td>Validation Loss</td></tr>
 </table>
 
 
 <h4>CNN+RNN+CTC Training and Validation Loss For License Number Recognition</h4>
-<div class="row">
-<div class="column"><img src="img/loss_CRNN.svg" width="300" height="300">  </div>
-<div class="column"> <img src="img/val_loss_CRNN.svg" width="300" height="300">  </div>
-</div>
-          
+
+<tr><td><img src="img/loss_CRNN.svg" width="300" height="300">  </td>
+  <td> <img src="img/val_loss_CRNN.svg" width="300" height="300">  </td>
+</tr>
+   <tr><td>Training Loss</td><td>Validation Loss</td></tr>
+</table>         
  
 <h3>Demo App</h3>
 
