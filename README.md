@@ -24,9 +24,9 @@ CNN+RNN+CTC Training and Validation Loss For License Number Recognition
 
 ### Sample Input Output
 ####Input Image
-![Car Image](test_sample_img/1_ (5).jpg)
+![Car Image](test_sample_img/1.jpg)
 ####Output 
-![Car License Number ](img/Sample_output.MHT)
+![Car License Number ](test_sample_img/Sample_output.jpg)
 
 ##Tech Stack
 1. Html/jquery
