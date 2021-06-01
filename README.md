@@ -4,7 +4,7 @@
 <h3>Demo App</h3>
 
 The Demo app is hosted on Google Cloud. [Launch](https://viden-n6rafmjufa-el.a.run.app)
-
+You may use sample test images here [test_sample_img](test_sample_img)
 <h3>Sample Input Output</h3>
 <table>
 <tr>
