@@ -54,12 +54,13 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 
 
 <h3>Tech Stack</h3>
-1. Html/jquery
-2. Python , TensorFlow and Keras,Flask
-3. YOLOv2 YAD2K model for license plate detection
-4. CNN+RNN+CTC model to recognize license number from license plate.
-5. Docker and GCP for deployment
-
+<ul>
+   <li> Html,jquery</li>
+<li> Python , TensorFlow and Keras,Flask</li>
+<li> YOLOv2 YAD2K model for license plate detection</li>
+<li> CNN+RNN+CTC model to recognize license number from license plate</li>
+<li> Docker and GCP for deployment</li>
+</ul>
 
 <h6>References</h6>
 YOLOv2 YAD2K refrence https://github.com/allanzelener/YAD2K
