@@ -3,7 +3,7 @@
 <center>This application is built on custom trained  Deep Learning Neural Network Models</center>  
 <h3>Demo App</h3>
 
-The Demo app is hosted on Google Cloud. [Launch](https://viden-n6rafmjufa-el.a.run.app)
+The Demo app is hosted on Google Cloud. <a href="https://viden-n6rafmjufa-el.a.run.app" target="_blank">Launch the app.</a></br>
 You may quickly test with  [test_sample_img](test_sample_img)
 <h3>Sample Input Output</h3>
 <table>
