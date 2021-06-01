@@ -3,7 +3,7 @@
 
 <h3>Demo App</h3>
 
-[The Demo app is hosted on Google Cloud Run]:( https://viden-n6rafmjufa-el.a.run.app)
+![The Demo app is hosted on Google Cloud Run]:( https://viden-n6rafmjufa-el.a.run.app)
 
 <h3>Sample Input Output</h3>
 <table>
@@ -53,7 +53,7 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
  
 
 
- <h3>Tech Stack
+<h3>Tech Stack</h3>
 1. Html/jquery
 2. Python , TensorFlow and Keras,Flask
 3. YOLOv2 YAD2K model for license plate detection
@@ -61,7 +61,7 @@ training the YOLOv2 Darknet-19 on both COCO and VOC dataset.
 5. Docker and GCP for deployment
 
 
-References
+<h6>References</h6>
 YOLOv2 YAD2K refrence https://github.com/allanzelener/YAD2K
 
 CRNN+CTC Model https://github.com/TheAILearner/A-CRNN-model-for-Text-Recognition-in-Keras
