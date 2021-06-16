@@ -3,7 +3,16 @@
 <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
 <link rel="stylesheet" href="/static/viden.css">
 
-
+<script>
+function toggleLoading() {
+var x = document.getElementById("loader")
+	if (x.style.display === "none") {
+		x.style.display = "block";
+	  } else {
+		x.style.display = "none";
+	  }
+}
+</script>
 </head>
 
 <body align="center">
@@ -22,8 +31,11 @@ The evaultion pipe line is based on yolo v2 and cnn+rnn+ctc models trained on cu
 </p>
 </form>
 </div>
-<div id="result">Result</div>
-<h5><a href="https://vahan.nic.in/nrservices/faces/user/citizen/citizenlogin.xhtml">For more information: https://vahan.nic.in/nrservices/faces/user/citizen/citizenlogin.xhtml</a></h5>
+<div >Result
+	<div id="loader" class="loader" style="display:none"></div>
+	<div id="result"></div>
+</div>
+<h5>Upcoming Feature to Integrate with <a href="https://vahan.nic.in/nrservices/faces/user/citizen/citizenlogin.xhtml"> https://vahan.nic.in/nrservices/faces/user/citizen/citizenlogin.xhtml</a></h5>
 
 <script>
 			
@@ -31,13 +43,13 @@ The evaultion pipe line is based on yolo v2 and cnn+rnn+ctc models trained on cu
 			
             /* attach a submit handler to the form */
             $("#carForm").submit(function(event) {
-
+				toggleLoading()
                 /* stop form from submitting normally */
-                event.preventDefault();
+               // event.preventDefault();
 				
-				  var $form = $(this),
+				 var $form = $(this);
                     
-                    url = $form.attr('action');
+                 url = $form.attr('action');
 				 $.ajax( {
 						url: url,
 						method: 'POST',
@@ -46,7 +58,7 @@ The evaultion pipe line is based on yolo v2 and cnn+rnn+ctc models trained on cu
 					  processData: false,
 					  contentType: false,
 					   success: function(data) {
-					
+							toggleLoading();
 							var content = $(data);
 							
 							var resultPlaceholder = $('#result');
@@ -58,15 +70,21 @@ The evaultion pipe line is based on yolo v2 and cnn+rnn+ctc models trained on cu
 							
 							
 							
-						}
+						},
+						error: function (jqXHR, status, err) {
+							toggleLoading();
+							var err_res='<b> Request Failed  :</b>'+status
+							+"</br> "+err;
+							$("#result").html(err_res)
+						  }
 					  
 					} );
-                /* get some values from elements on the page: */
+                
               
 					
                 /* stop form from submitting normally */
                 event.preventDefault();
-
+				return;
                } ); 
         </script>
 		
@@ -76,18 +94,27 @@ var uploadField = document.getElementById("image");
  
 uploadField.onchange = function() {
 var filename =this.files[0].name;
-var ext = filename.split('.').pop();
+
+var ext = filename.split('.').pop().toLowerCase();
+
     if(this.files[0].size > 1740800){
        alert("File is too big! Expected < 1.5 mb");
        this.value = "";
+	   return;
     };
 	
 	if(!(ext.localeCompare("jpg") == 0 || ext.localeCompare("jpeg") == 0)){
 		alert(ext+" File not supported");
+		
        this.value = "";
+	   return;
 	};
+	
 };
 
 </script>
+
+
+</head>
 </body>
 </html>
