@@ -1,0 +1,12 @@
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:tdw:192.168.68.104",
+  "verificationMethod": [
+    {
+      "id": "did:tdw:192.168.68.104#key-0",
+      "type": "EC",
+      "controller": "did:tdw:192.168.68.104",
+      "publicKeyJwk": "{\"kty\":\"EC\",\"use\":\"sig\",\"crv\":\"P-256\",\"kid\":\"f85f487c-3417-4e68-95e1-473e103c3a3a\",\"x\":\"g-Z34qZSc37mnD0WStmVnwy1JMeG93wFlVodMfsvNCk\",\"y\":\"SnODLPwVMvqPvDhyxyBDSFhXipr_SpJSki55UaCg_3E\"}"
+    }
+  ]
+}
